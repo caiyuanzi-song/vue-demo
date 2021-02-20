@@ -12,19 +12,19 @@
    <section class="todoapp" id="todoapp">
        <header class="header">
            <h1>todos</h1>
-           <input class="new-todo" autocomplete="off" placeholder="what needs to be done?" autofocus @keyup.enter="addItem">
+           <input class="new-todo" autocomplete="off" placeholder="what needs to be done?" v-focus @keyup.enter="addItem">
        </header>
        <section class="main" v-show="items.length">
            <input type="checkbox" name="" id="toggle-all" class="toggle-all" v-model="toggleAll">
            <label for="toggle-all">Mark all as complete</label>
            <ul class="todo-list">
-               <li  class="todo" v-for="(item,index) in items" :class="{completed: item.completed,editing: item === currentItem}">
+               <li  class="todo" v-for="(item,index) in filterItems" :class="{completed: item.completed,editing: item === currentItem}">
                    <div class="view">
                        <input type="checkbox" class="toggle" name="" id="" v-model="item.completed">
                        <label @dblclick="toEdit(item)">{{item.content}}</label>
                        <button class="destroy" :value="item.id" @click="removeItem(index)"></button>
                    </div>
-                   <input class="edit" :value="item.content" @keyup.esc="cancelEdit" @keyup.enter="finishEdit(item,index,$event)" @blur="finishEdit(item,index,$event)">
+                   <input v-todo-focus="item === currentItem" class="edit" :value="item.content" @keyup.esc="cancelEdit" @keyup.enter="finishEdit(item,index,$event)" @blur="finishEdit(item,index,$event)">
                </li>
            </ul>
        </section>
@@ -32,6 +32,13 @@
             <span class="todo-count">
                 <strong v-text="remaining"></strong>  {{pluralize('item',remaining)}} left
             </span>
+            <ul class="filters">
+                <li>
+                    <a :class="{selected:filterStatus === 'all'}" href="#/">All</a>
+                    <a :class="{selected:filterStatus === 'active'}" href="#/active">Active</a>
+                    <a :class="{selected:filterStatus === 'completed'}" href="#/completed">Completed</a>
+                </li>
+            </ul>
             <button class="clear-completed" @click="removeCompleted" v-show="items.length > remaining">
                 Clear completed
             </button>
@@ -44,12 +51,29 @@
     <script src="js/store.js"></script>
     <!-- <script src="js/routes.js"></script> -->
     <script>
-        
-        new Vue({
+        var STORAGE_KEY = "items-vuejs"
+        const itemStorage = {
+            fetch: function(){
+                return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]')
+            },
+            save: function(value){
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(value))
+            }
+        }
+
+        Vue.directive('focus',{
+            inserted(el,binding){
+                el.focus()
+            },
+           
+        })
+
+        var vm = new Vue({
             el: '#todoapp',
             data: {
-                items: [],
-                currentItem: null
+                items: itemStorage.fetch(),
+                currentItem: null,
+                filterStatus: 'all'
             },
             methods: {
                 addItem(event){
@@ -108,9 +132,45 @@
                             item.completed = newStatus
                         });
                     }
+                },
+                filterItems(){
+                    switch(this.filterStatus){
+                        case "active":
+                            return this.items.filter(item => !item.completed)
+                        case "completed": 
+                            return this.items.filter(item => item.completed)
+                        default: 
+                            return this.items
+
+                    }
+                }
+            },
+            directives:{
+                'todo-focus':{
+                    update(el,binding){
+                        if(binding.value){
+                            el.focus()
+                        }
+                    }
+                }
+            },
+            watch:{
+                items:{
+                    deep: true,
+                    handler: function(newVlaue,oldValue){
+                        itemStorage.save(newVlaue)
+                    }
                 }
             }
         })
+
+        window.onhashchange = function(){
+            console.log('hash改变了',window.location.hash)
+            const hash = window.location.hash.substr(2) || 'all'
+            console.log('hash',hash)
+            vm.filterStatus = hash
+        }
+        window.onhashchange()
     </script>
 </body>
 </html>
