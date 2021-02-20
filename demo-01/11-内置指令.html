@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        [v-cloak]{
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="app" v-cloak>
+        <!-- 1、{{}} 会造成闪烁现象，v-text不会 -->
+        <!-- 2、{{}} 若还想使用，又不想有闪烁效果，使用v-cloak处理 -->
+        <h3>{{message}}</h3>
+        <h3>{{message}}</h3>
+        <h3>{{message}}</h3>
+        <h3 v-text="message"></h3>
+        <h3 v-text="message"></h3>
+        <h3 v-text="message"></h3>
+    </div>
+    <script src="./node_modules/vue/dist/vue.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                message: "hello,Cyz"
+            }
+        })
+    </script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        <h3>1、事件处理方法 v-on或@</h3>
+        <button v-on:click="say">Say {{msg}}</button>
+        <!-- $event代表的是原生Dom事件 -->
+        <button @click="warn('hello',$event)">Warn</button>
+
+        <h3>2、事件修饰符</h3>
+        <!-- 2.1防止单击事件继续传播 -->
+        <div @click="toDo">
+            <button @click="doThis">单击事件会继续传播</button>
+        </div><br/>
+        <div @click="toDo">
+            <button @click.stop="doThis">阻止事件会继续传播</button>
+        </div><br/>
+
+        <!-- 2.2阻止事件的默认行为 -->
+        <a href="www.baidu.com" @click.prevent="doStop">百度一下</a>
+
+        <!-- 2.3点击事件只会触发一次 -->
+        <button @click.once="doOnly">Only once:{{num}}</button>
+
+        <h3>3、按键修饰符</h3>
+        <input @keyup.enter="keyEnter">
+        <input @keyup.space="keySpace">
+        <input @keyup.13="keyCode">
+    </div>
+    <script src="./node_modules/vue/dist/vue.js"></script>
+    <script>
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                msg: 'Hello Cyz!',
+                num : 0
+            },
+            methods: {
+                say: function(event){
+                    alert(this.msg)
+                    alert(event.target.innerHTML)
+                },
+                // 如果说函数有多个参数，而又需要用原生事件，则需要使用$event作为参数传入
+                warn: function(msg,event){
+                    alert(msg + ',' + event.target.tagName)
+                },
+                doThis: function(){
+                    alert('doThis...')
+                },
+                toDo: function(){
+                    alert('toDo...')
+                },
+                doStop: function(){
+                    alert("doStop...")
+                },
+                doOnly: function(){
+                    this.num ++
+                },
+                keyEnter: function(){
+                    alert('按键为确认键')
+                },
+                keySpace: function(){
+                    alert('按键为空格键')
+                },
+                keyCode: function(){
+                    alert('按键为确认键')
+                }
+            },
+        })
+    </script>
+</body>
+</html>
