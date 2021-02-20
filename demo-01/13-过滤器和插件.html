@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        <h3>过滤器接收单个参数</h3>
+        <p>{{content | contentFilter}}</p>
+        <input type="text" :value="content | contentFilter">
+
+        <h3>过滤器接收多个参数</h3>
+        <p>{{englishScore | add(mathScore,chinaScore)}}</p>
+        <input type="text" :value="englishScore | add(mathScore,chinaScore)">
+    </div>
+    <script src="./node_modules/vue/dist/vue.js"></script>
+    <script>
+        // Vue.filter('contentFilter',function(val){
+        //     if(!val){
+        //         return ''
+        //     }
+        //     return val.toString().toUpperCase().replace('TMD','***').replace('SB',"***")
+        // })
+        new Vue({
+            el: '#app',
+            data: {
+                content: '小伙子，你tmd就是个SB',
+                englishScore: 98,
+                mathScore: 89,
+                chinaScore: 100
+            },
+            filters:{
+                contentFilter(val){
+                    if(!val){
+                        return ''
+                    }
+                    return val.toString().toUpperCase().replace('TMD','***').replace('SB','**')
+                },
+                add(num1,num2,num3){
+                    return num1 + num2 + num3
+                }
+            }
+        })
+    </script>
+</body>
+</html>
