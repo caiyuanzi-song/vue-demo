@@ -3,7 +3,7 @@
         
     <!--右边上半区域-->
     <h1 class="page-header">Dashboard</h1>
-        <dashboard :hobbies="hobbies"></dashboard>
+        <dashboard :hobbies="hobbies" @delete_hobby="deleteHobby"></dashboard>
     <!--右边下半区域-->
         <h2 class="sub-header">Section title</h2>
         <home-list :emp-list="empList" :deleteEmp="deleteEmp"></home-list>
@@ -28,6 +28,9 @@
           methods: {
               deleteEmp(index) {
                   this.empList.splice(index,1)
+              },
+              deleteHobby(index){
+                  this.hobbies.splice(index,1)
               }
           },
       }
