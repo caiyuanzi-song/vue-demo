@@ -6,7 +6,7 @@
         <dashboard :hobbies="hobbies"></dashboard>
     <!--右边下半区域-->
         <h2 class="sub-header">Section title</h2>
-        <home-list :emp-list="empList"></home-list>
+        <home-list :emp-list="empList" :deleteEmp="deleteEmp"></home-list>
         </div>`
       window.AppHome = {
           template,
@@ -23,6 +23,11 @@
                       {id:3,name:'王五',age:20},
                       {id:4,name:'赵六',age:21}
                   ]
+              }
+          },
+          methods: {
+              deleteEmp(index) {
+                  this.empList.splice(index,1)
               }
           },
       }
